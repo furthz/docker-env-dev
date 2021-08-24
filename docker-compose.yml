@@ -1,0 +1,15 @@
+version: '2.4'
+
+services: 
+  webservice:
+    build:  
+      context: .
+      target: dev
+    ports: 
+      - 8081:3000
+    volumes: 
+      - .:/opt/app
+      - /opt/app/node_modules
+  
+    
+    
