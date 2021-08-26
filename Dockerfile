@@ -76,14 +76,10 @@ FROM test as audit
 
 RUN npm audit
 
-# aqua microscanner, which needs a token for API access
-# note this isn't super secret, so we'll use an ARG here
-# https://github.com/aquasecurity/microscanner
-ARG MICROSCANNER_TOKEN
-ADD https://get.aquasec.com/microscanner /
-RUN chmod +x /microscanner
-RUN apk add --no-cache ca-certificates && update-ca-certificates
-RUN /microscanner $MICROSCANNER_TOKEN --continue-on-failure
+COPY --from=aquasec/trivy:latest /usr/local/bin/trivy /usr/local/bin/trivy
+
+RUN trivy filesystem --exit-code 1 --no-progress /
+
 
 ##############  STAGE PROD  ###########################
 FROM source as prod
